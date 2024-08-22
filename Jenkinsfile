@@ -16,7 +16,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Testing..'
-                sh 'cd webapp && sudo docker container run --rm -e SONAR_HOST_URL="http://20.172.187.108:9000" -e SONAR_LOGIN="sqp_cae41e62e13793ff17d58483fb6fb82602fe2b48" -v ".:/usr/src" sonarsource/sonar-scanner-cli -Dsonar.projectKey=lms'
+                sh 'cd webapp && sudo docker container run --rm -e SONAR_HOST_URL="http://54.193.40.227:9000" -e SONAR_LOGIN="sqp_3018cc5eb3775eb8b7d4982ce65738fd56f075d0" -v ".:/usr/src" sonarsource/sonar-scanner-cli -Dsonar.projectKey=lms'
             }
         }
         stage('Release') {
@@ -24,7 +24,7 @@ pipeline {
                 echo 'Release Nexus'
                 sh 'rm -rf *.zip'
                 sh 'cd webapp && zip dist-${BUILD_NUMBER}.zip -r dist'
-                sh 'cd webapp && curl -v -u $Username:$Password --upload-file dist-${BUILD_NUMBER}.zip http://20.172.187.108:8081/repository/lms/'
+                sh 'cd webapp && curl -v -u $Username:$Password --upload-file dist-${BUILD_NUMBER}.zip http://54.193.40.227:8081/repository/lms/'
             }
         }
     }
