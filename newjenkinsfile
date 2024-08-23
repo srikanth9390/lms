@@ -1,0 +1,58 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_CREDENTIALS_ID = 'docker-credentials-id'
+        DOCKER_REGISTRY = 'your-docker-registry'
+        VERSION = readFile('package.json').version
+        EKS_CLUSTER_NAME = 'lms'
+        AWS_REGION = 'us-west-1'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git url: 'https://github.com/srikanth9390/lms.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    dockerImage = docker.build 'https://index.docker.io/v1/lms'
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry("https://index.docker.io/v1/", "${DOCKER_CREDENTIALS_ID}") {
+                        dockerImage.push("${VERSION}")
+                        dockerImage.push("latest")
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to EKS') {
+            steps {
+                script {
+                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentials-id']]) {
+                        sh """
+                        aws eks --region us-west-1 update-kubeconfig --name lms
+                        kubectl apply -f lms-deploy.yaml
+                        kubectl apply -f lms-service.yaml
+                        """
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
