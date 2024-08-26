@@ -1,12 +1,12 @@
 pipeline {
     agent any
    }
-   stages{
-       stage('checkout') {
-          steps{
-              git 'https://github.com/srikanth9390/lms.git'
-          }
-       }
+   stages {
+        stage('Checkout Code') {
+            steps {
+                git 'https://github.com/srikanth9390/lms.git'
+            }
+        }
     
         stage('Build') {
             steps {
