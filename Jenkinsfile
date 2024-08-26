@@ -1,7 +1,10 @@
 pipeline {
     agent any
    }
-
+   stages{
+       stage('checkout')
+          steps{
+              gitURL : https://github.com/srikanth9390/lms.git
     stages {
         stage('Build') {
             steps {
