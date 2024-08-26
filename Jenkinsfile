@@ -2,10 +2,12 @@ pipeline {
     agent any
    }
    stages{
-       stage('checkout')
+       stage('checkout') {
           steps{
-              gitURL : https://github.com/srikanth9390/lms.git
-    stages {
+              git 'https://github.com/srikanth9390/lms.git'
+          }
+       }
+    
         stage('Build') {
             steps {
                 echo 'Building..'
