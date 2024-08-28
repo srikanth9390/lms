@@ -27,7 +27,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'https://index.docker.io/v1', usernameVariable:   
  'srikanth1322', passwordVariable: 'Srikanth@9390')]) {
-                    sh "docker login -u srikanth1322 -p Srikanth@9390  https://registry-1.docker.io/v2"
+                    sh "docker login -u srikanth1322 -p Srikanth@9390 https://index.docker.io/v1"
                     sh "docker push lms:latest"
                 }
             }
