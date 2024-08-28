@@ -1,6 +1,12 @@
 pipeline {
     agent any
-    
+
+    environment {
+        DOCKER_REGISTRY = 'https://index.docker.io/v1/'
+        IMAGE_NAME = 'lms-app'
+        VERSION = sh(script: "jq -r .version package.json", returnStdout: true).trim()
+    }
+
     stages {
         stage('Checkout Code') {
             steps {
@@ -27,10 +33,4 @@ pipeline {
         }
     }
 
-    post {
-        always {
-            cleanWs()
-        }
-    }
-}
-
+   
