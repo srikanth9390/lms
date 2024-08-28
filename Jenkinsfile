@@ -13,7 +13,11 @@
         stage('Build Docker Image') {
             steps {
                 script {
-                    dockerImage = docker.build("https://registry-1.docker.io/v2/ nginx:latest
+                    // Read version from package.json
+                    def version = sh(returnStdout: true, script: 'cat package.json | jq -r .version').trim()
+
+                    // Build image with version tag
+                    docker.build "lms:version"
                 }
             }
         }
