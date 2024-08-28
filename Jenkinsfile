@@ -28,6 +28,15 @@ pipeline {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') {
                         dockerImage.push()
+                     }
                 }
             }
         }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
