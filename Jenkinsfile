@@ -17,7 +17,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    dockerImage = docker.build("https://index.docker.io/v1/lms-app:latest")
+                     sh "sudo docker build -t lms-app:latest ."
                 }
             }
         }
