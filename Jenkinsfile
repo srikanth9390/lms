@@ -2,54 +2,35 @@ pipeline {
     agent any
 
     stages {
-        stage('LMS Code Analysis') {
+        // Stage 1: Checkout Code
+        stage('Checkout Code') {
             steps {
-                echo 'Preparing Sonar Analysis'
-                sh 'cd webapp && sudo docker run --rm -e SONAR_HOST_URL="http://52.53.218.201:9000" -v ".:/usr/src" -e SONAR_TOKEN="sqp_3018cc5eb3775eb8b7d4982ce65738fd56f075d0" sonarsource/sonar-scanner-cli -Dsonar.projectKey=lms'
-                echo 'Completed Sonar Analysis'
+                git branch: 'dev', url: 'https://github.com/srikanth9390/lms.git'
             }
         }
-        stage('LMS Build Artifacts') {
-            steps {
-                echo 'Preparing LMS Build'
-                sh 'cd webapp && npm install && npm run build'
-                echo 'Completed LMS Build'
-            }
-        }
-        stage('LMS Release Artifacts') {
+
+        // Stage 2: Build Docker Image
+        stage('Build Docker Image') {
             steps {
                 script {
-                    echo 'Preparing LMS Release'
-                    def packageJSON = readJSON file: 'webapp/package.json'
-                    def packageJSONVersion = packageJSON.version
-                    echo "${packageJSONVersion}"
-                    sh "zip webapp/lms-${packageJSONVersion}.zip -r webapp/dist"
-                    sh "curl -v -u admin:Srikanth@9390 --upload-file webapp/lms-${packageJSONVersion}.zip http://52.53.218.201:8081/repository/lms/"
-                    echo 'Completed LMS Release'
+                    // Read version from package.json
+                    def version = sh(returnStdout: true, script: 'cat package.json | jq -r .version').trim()
+
+                    // Build image with version tag
+                    docker.build "lms:latest"
                 }
             }
         }
 
-        stage('LMS Deploy Artifacts') {
+        // Stage 3: Push Docker Image (requires credentials)
+        stage('Push Docker Image') {
             steps {
-                script {
-                    echo 'Preparing LMS Deployment'
-                    def packageJSON = readJSON file: 'webapp/package.json'
-                    def packageJSONVersion = packageJSON.version
-                    sh "curl -u admin:Srikanth@9390 -X GET \'http://52.53.218.201:8081/repository/lms/lms-${packageJSONVersion}.zip\' --output lms-'${packageJSONVersion}'.zip"
-                    sh 'sudo rm -rf /var/www/html/*'
-                    sh "sudo unzip -o lms-'${packageJSONVersion}'.zip"
-                    sh "sudo cp -r webapp/dist/* /var/www/html"
-                    echo 'Completed LMS Deployment'
+                withCredentials([usernamePassword(credentialsId: 'docker-registry-credentials', usernameVariable:   
+ 'srikanth1322', passwordVariable: 'Srikanth@9390')]) {
+                    sh "docker login -u srikanth1322 -p Srikanth@9390"
+                    sh "docker push lms:latest"
                 }
             }
         }
 
-        stage('LMS Clean Up') {
-            steps {
-                echo 'Cleaning Up'
-                cleanWs()
-            }
-        }
-    }
-}
+       
