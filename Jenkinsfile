@@ -13,7 +13,7 @@
         stage('Build Docker Image') {
             steps {
                 script {
-                    dockerImage = docker.build("https://registry-1.docker.io/v2/nginx:latest
+                    dockerImage = docker.build("https://registry-1.docker.io/v2/ nginx:latest
                 }
             }
         }
