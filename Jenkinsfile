@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/srikanth9390/lms.git'
+                git 'git@github.com:srikanth9390/lms.git'
             }
         }
 
