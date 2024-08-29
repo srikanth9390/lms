@@ -5,6 +5,7 @@ pipeline {
         DOCKER_REGISTRY = 'https://index.docker.io/v1/'
         IMAGE_NAME = 'lms-app'
         VERSION = sh(script: "jq -r .version webapp/package.json", returnStdout: true).trim()
+        IMAGE_TAG = "https://index.docker.io/v1/lms-app:latest"
     }
 
     stages {
