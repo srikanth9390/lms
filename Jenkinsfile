@@ -25,7 +25,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'srikanth1322', variable: 'Srikanth@9390')]) {
+                    withCredentials([usernamePassword(credentialsId: 'srikanth1322', usernameVariable: 'srikanth1322', passwordVariable: 'Srikanth@9390')]) {
                        sh "echo Srikanth@9390 | sudo docker login -u srikanth1322 --password-stdin"
                        sh "sudo docker push lms-app:latest"
                     }
