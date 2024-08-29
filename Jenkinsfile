@@ -18,7 +18,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                     sh "sudo docker build -t lms-app:latest -f webapp/Dockerfile ."
+                     sh "sudo docker build -t srikanth1322/lms-app:latest -f webapp/Dockerfile ."
                 }
             }
         }
