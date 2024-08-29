@@ -25,8 +25,9 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') {
-                        dockerImage.push()
+                    withCredentials([string(credentialsId: 'srikanth1322', variable: 'Srikanth@9390')]) {
+                       sh "echo Srikanth@9390 | sudo docker login -u srikanth1322 --password-stdin"
+                       sh "sudo docker push lms-app:latest"
                     }
                 }
             }
@@ -34,6 +35,9 @@ pipeline {
     }
 }
 
+                      
+
+                
 
 
    
